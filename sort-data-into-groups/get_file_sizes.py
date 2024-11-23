@@ -11,6 +11,8 @@ def get_file_sizes(data_folder='./data'):
     model = genai.GenerativeModel("gemini-1.5-flash")
 
     for filename in os.listdir(data_folder):
+        if not filename.endswith('.txt'):
+            continue
         file_path = os.path.join(data_folder, filename)
         if os.path.isfile(file_path):
             print(f'Processing file: {file_path}')

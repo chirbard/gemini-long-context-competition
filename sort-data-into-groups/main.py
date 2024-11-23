@@ -7,8 +7,7 @@ data_folder = './data'
 output_folder = './output'
 
 file_sizes = get_file_sizes(data_folder=data_folder)
-# file_sizes = {'file1.txt': 200, 'file2.txt': 200, 'file3.txt': 300, 'file4.txt': 400}
-groups = get_groups(file_sizes=file_sizes, group_token_limit=70000)
+groups = get_groups(file_sizes=file_sizes, group_token_limit=1000000)
 
 print(groups)
 
