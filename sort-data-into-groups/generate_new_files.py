@@ -2,6 +2,7 @@ import os
 
 def generate_new_files(groups, data_folder='./data', output_folder='./output'):
     for i, group in enumerate(groups):
+        i = i + 1
         with open(f'{output_folder}/group_{i}.txt', 'w') as f:
             for file_name in group:
                 input_file_path = os.path.join(data_folder, file_name)
