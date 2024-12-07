@@ -1,6 +1,6 @@
 <template>
- 
-<div>
+
+  <div>
     <SpeedInsights />
     <nuxt-page v-if="accessGranted" />
     <div v-else>
@@ -27,7 +27,7 @@ onMounted(() => {
 });
 </script>
 <style>
-.app {
-  font-family: 'Poppins';
+* {
+  font-family: 'Poppins', Arial, sans-serif;
 }
 </style>

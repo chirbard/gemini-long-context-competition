@@ -48,7 +48,6 @@ onMounted(() => {
   margin: 0 auto;
   padding: 20px;
   text-align: center;
-  font-family: Arial, sans-serif;
 }
 
 .input {
