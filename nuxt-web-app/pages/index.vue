@@ -5,19 +5,15 @@
             <h1>juur.ai</h1>
         </div>
         <div class="messages">
-            <div
-                v-for="(msg, index) in messages"
-                :key="index"
-                class="message"
-                :class="{ left: msg.role === 'juurikas', right: msg.role !== 'juurikas' }"
-            >
-                {{ msg.text }}
+            <div v-for="(msg, index) in messages" :key="index" class="message"
+                :class="{ left: msg.role === 'model', right: msg.role !== 'model' }">
+                {{ msg.parts[0].text }}
                 <p class="time">{{ formatTime(msg.timestamp) }}</p>
             </div>
         </div>
 
         <div class="userInput">
-            <form @submit.prevent="sendMessage"> 
+            <form @submit.prevent="sendMessage">
                 <input v-model="userInput" type="text" placeholder="Ask Juurikas" class="input" />
                 <button type="submit" class="button"></button>
             </form>
@@ -30,32 +26,48 @@ import { ref } from "vue";
 import { useFetch } from "#app";
 
 const messages = ref([
-    { role: "juurikas", text: "Tere, Ma olen Juurikas. Sinu abiline, et paremini seaduseid leida.", timestamp: new Date().toISOString(),
-},
+    {
+        role: "model",
+        parts: [
+            { text: "Tere, Ma olen Juurikas. Sinu abiline, et paremini seaduseid leida." },
+        ],
+        timestamp: new Date().toISOString()
+    },
 ]);
 const userInput = ref("");
 
 const sendMessage = async () => {
     if (!userInput.value.trim()) return;
 
-    var input = userInput.value;
+    let messageHistory = JSON.parse(JSON.stringify(messages.value)); // deep copy of messages
+    const prompt = userInput.value;
+
+    // remove timestamps from message history
+    messageHistory = messageHistory.map((msg) => {
+        delete msg.timestamp;
+        return msg;
+    });
+
+    // message history to json string
+    messageHistory = JSON.stringify(messageHistory);
+    console.log(messageHistory);
 
     userInput.value = "";
 
     // Add the user's message to the chat
-    messages.value.push({ role: "User", text: input, timestamp: new Date().toISOString(), });
+    messages.value.push({ role: "user", parts: [{ text: prompt }], timestamp: new Date().toISOString() });
+
     // Send the prompt to the API
     const { data, error } = await useFetch("/api/chat", {
         method: "POST",
-        body: { prompt: input },
+        body: { messageHistory: messageHistory, prompt: prompt },
     });
 
     if (error.value) {
-        messages.value.push({ role: "juurikas", text: "Sorry, something went wrong.", timestamp: new Date().toISOString()});
+        messages.value.push({ role: "model", parts: [{ text: "Sorry, something went wrong." }], timestamp: new Date().toISOString() });
         console.error(error.value);
     } else {
-        messages.value.push({ role: "juurikas", text: data.value.response, timestamp: new Date().toISOString(),
-    });
+        messages.value.push({ role: "model", parts: [{ text: data.value.response }], timestamp: new Date().toISOString() });
     }
 };
 const formatTime = (timestamp) => {
@@ -82,6 +94,7 @@ const formatTime = (timestamp) => {
     display: flex;
     align-items: center;
 }
+
 .intro img {
     width: 40px;
     margin-right: 10px;
@@ -100,6 +113,7 @@ const formatTime = (timestamp) => {
 .message {
     margin-bottom: 10px;
 }
+
 .message.left {
     max-width: 80%;
     width: fit-content;
@@ -107,7 +121,7 @@ const formatTime = (timestamp) => {
     text-align: left;
     border: #ccc 1px solid;
     border-radius: 16px;
-    display:flex;
+    display: flex;
     flex-direction: row;
 
 }
@@ -115,20 +129,20 @@ const formatTime = (timestamp) => {
 .message.right {
     margin-left: auto;
     max-width: 80%;
-    width: fit-content;    
+    width: fit-content;
     padding: 8px;
     color: white;
     background-color: #16568B;
     text-align: left;
     border-radius: 16px;
-    display:flex;
+    display: flex;
     flex-direction: row;
 
 }
 
 .time {
     font-size: 11px;
-    
+
     padding-left: 8px;
     color: #a6a6a6;
     text-align: right;
@@ -148,9 +162,10 @@ const formatTime = (timestamp) => {
     width: calc(100% - 42px);
     color: grey;
     padding: 8px 4px;
-    background-color:transparent;
+    background-color: transparent;
     border: none;
 }
+
 .input:focus {
     outline: none;
 }
@@ -165,6 +180,7 @@ const formatTime = (timestamp) => {
     background-image: url('/images/send.svg');
     background-color: transparent;
 }
+
 .button:hover {
     filter: invert(31%) sepia(100%) saturate(748%) hue-rotate(176deg) brightness(95%) contrast(101%);
 }
@@ -174,15 +190,19 @@ const formatTime = (timestamp) => {
         height: calc(100vh - 48px);
         padding: 16px;
     }
+
     .message.left {
         padding: 12px;
     }
+
     .message.right {
         padding: 12px;
     }
+
     .button {
         display: inline-block;
     }
+
     .input {
         width: calc(100% - 36px);
     }
