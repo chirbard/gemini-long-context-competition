@@ -1,8 +1,10 @@
 <template>
   <div class="code-entry-container">
-    <h1>Enter Access Code</h1>
-    <form @submit.prevent="validateCode">
-      <input v-model="accessCode" type="text" placeholder="Enter code" class="input" />
+    <img src="/images/logo.svg" alt="juurikas" />
+    <!-- <h2>Enter access code to continue</h2> -->
+    <form @submit.prevent="validateCode" class="input-group">
+      <label class="input-group__label">Enter access code to continue</label>
+      <input v-model="accessCode" type="text" placeholder="Enter code" class="input input-group__input" />
       <button type="submit" class="button">Submit</button>
     </form>
     <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
@@ -42,33 +44,104 @@ onMounted(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .code-entry-container {
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 20px;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: 1em;
+}
+
+p {
+  color: red;
+  font-size: 0.8em;
+  margin: 0;
+  padding: 0;
   text-align: center;
 }
 
-.input {
-  width: calc(100% - 20px);
-  padding: 10px;
-  margin-bottom: 10px;
+img {
+  width: 60px;
+  height: 60px;
 }
 
-.button {
-  padding: 10px;
-  background-color: #007bff;
-  color: white;
-  border: none;
+button {
+  background-color: #16568B;
+  border-radius: 8px;
+  border-style: none;
+  box-sizing: border-box;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: inline-block;
+  font-size: 14px;
+  font-weight: 500;
+  height: 40px;
+  line-height: 20px;
+  list-style: none;
+  margin: 0;
+  outline: none;
+  padding: 10px 16px;
+  position: relative;
+  text-align: center;
+  text-decoration: none;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+button:hover,
+button:focus {
+  background-color: #1c6daf;
+}
+
+.input-group {
+  width: 96%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  z-index: 2;
+  gap: 1em;
+}
+
+@supports (mix-blend-mode: darken) {
+  .input-group {
+    position: relative;
+    mix-blend-mode: lighten;
+  }
+
+  .input-group__label {
+    position: absolute;
+    left: 1.5em;
+    top: -0.28em;
+    background: #fff;
+  }
+}
+
+.input-group__label {
+  padding: 0 0.5em;
+  margin-bottom: 0.5em;
+  text-transform: uppercase;
+  font-size: 0.6em;
+  letter-spacing: 0.1em;
+  font-weight: 700;
+  color: #444;
   cursor: pointer;
 }
 
-.button:hover {
-  background-color: #0056b3;
-}
-
-.error {
-  color: red;
+.input-group__input {
+  color: #000;
+  font-size: 1rem;
+  line-height: 1;
+  border-style: none;
+  outline: none;
+  padding: 1em;
+  border: 2px solid #16568B;
+  border-radius: 1em;
 }
 </style>

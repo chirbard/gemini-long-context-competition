@@ -77,7 +77,7 @@ const formatTime = (timestamp) => {
 
 </script>
 
-<style>
+<style scoped>
 .chat-container {
     max-width: 600px;
     height: calc(100vh - 16px);
