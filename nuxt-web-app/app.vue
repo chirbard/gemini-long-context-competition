@@ -30,4 +30,9 @@ onMounted(() => {
 * {
   font-family: 'Poppins', Arial, sans-serif;
 }
+
+body {
+  margin: 0;
+  padding: 0;
+}
 </style>

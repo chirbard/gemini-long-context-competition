@@ -12,4 +12,17 @@ export default defineNuxtConfig({
     securityCode: process.env.SECURITY_CODE,
   },
   pages: true,
+  app: {
+    head: {
+      title: "juur.ai",
+      meta: [
+        { charset: "utf-8" },
+        {
+          name: "viewport",
+          content:
+            "width=device-width, initial-scale=1, interactive-widget=resizes-content",
+        },
+      ],
+    },
+  },
 });
