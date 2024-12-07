@@ -37,8 +37,9 @@ const userInput = ref("");
 const sendMessage = async () => {
     if (!userInput.value.trim()) return;
 
-    const messageHistory = messages.value;
     const prompt = userInput.value;
+    let messageHistory = messages.value;
+    messageHistory = JSON.stringify(messageHistory);
 
     // Add the user's message to the chat
     messages.value.push({ role: "user", parts: [{ text: userInput.value }] });
