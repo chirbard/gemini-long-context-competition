@@ -28,6 +28,9 @@ import { useFetch } from "#app";
 // const messages = ref([
 //     { role: "AI", text: "Hello! How can I assist you today?" },
 // ]);
+// const messages = ref([
+//     { role: "AI", text: "Hello! How can I assist you today?" },
+// ]);
 const messages = ref([
     {
         role: "juurikas", text: "Tere, Ma olen Juurikas. Sinu abiline, et paremini seaduseid leida.", timestamp: new Date().toISOString(),
