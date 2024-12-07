@@ -8,7 +8,7 @@
       <div class="messages">
         <div v-for="(msg, index) in messages" :key="index" class="message"
           :class="{ left: msg.role === 'model', right: msg.role !== 'model' }">
-          {{ msg.parts[0].text }}
+          <p class="message-text">{{ msg.parts[0].text }}</p>
           <p class="time">{{ formatTime(msg.timestamp) }}</p>
         </div>
       </div>
@@ -31,7 +31,7 @@ const messages = ref([
   {
     role: "model",
     parts: [
-      { text: "Tere, Ma olen Juurikas. Sinu abiline, et paremini seaduseid leida." },
+      { text: "Tere, Ma olen Juurikas. Sinu isiklik juriidiline nõustaja." },
     ],
     timestamp: new Date().toISOString()
   },
@@ -76,7 +76,6 @@ const formatTime = (timestamp) => {
   const date = new Date(timestamp);
   return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };
-
 </script>
 
 <style scoped>
@@ -107,7 +106,7 @@ body {
 }
 
 .chat-container {
-  height: calc(100vh - 20px);
+  height: calc(100% - 20px);
   width: calc(100% - 20px);
   max-width: 600px;
   padding: 0px;
@@ -120,13 +119,25 @@ body {
 .intro {
   margin-bottom: 20px;
   height: 50px;
-  display: flex;
+  display: none;
   align-items: center;
+}
+
+@media only screen and (min-height: 400px) {
+  .intro {
+    display: flex;
+  }
 }
 
 .intro img {
   width: 40px;
   margin-right: 10px;
+}
+
+.intro h1 {
+  font-size: 2em;
+  margin: 0;
+  color: #16568B
 }
 
 .messages {
@@ -141,12 +152,13 @@ body {
 
 .message {
   margin-bottom: 10px;
+  padding: 0.5em 0.8em;
 }
 
 .message.left {
   max-width: 80%;
   width: fit-content;
-  padding: 8px;
+
   text-align: left;
   border: #ccc 1px solid;
   border-radius: 16px;
@@ -159,7 +171,6 @@ body {
   margin-left: auto;
   max-width: 80%;
   width: fit-content;
-  padding: 8px;
   color: white;
   background-color: #16568B;
   text-align: left;
@@ -169,9 +180,15 @@ body {
 
 }
 
-.time {
-  font-size: 11px;
+.message-text {
+  font-size: 1em;
+  margin: 0;
+  padding: 0;
+}
 
+.time {
+  font-size: 0.7em;
+  width: max-content;
   padding-left: 8px;
   color: #a6a6a6;
   text-align: right;
@@ -179,6 +196,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: end;
+  white-space: nowrap;
 }
 
 .userInput {
@@ -220,13 +238,10 @@ body {
     padding: 16px;
   }
 
-  .message.left {
-    padding: 12px;
+  .message {
+    padding: 0.8em 1em;
   }
 
-  .message.right {
-    padding: 12px;
-  }
 
   .button {
     display: inline-block;
