@@ -86,7 +86,8 @@ const formatTime = (timestamp) => {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
+    height: 100%;
+    overflow: hidden;
 }
 
 .intro {
