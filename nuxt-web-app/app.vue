@@ -1,5 +1,6 @@
 <template>
   <div>
+    <SpeedInsights />
     <nuxt-page v-if="accessGranted" />
     <div v-else>
       <router-view />
@@ -10,6 +11,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
+import { SpeedInsights } from '@vercel/speed-insights/vue';
 
 const accessGranted = ref(false);
 const router = useRouter();
