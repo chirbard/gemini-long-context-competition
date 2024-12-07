@@ -45,9 +45,29 @@ onMounted(() => {
 </script>
 
 <style scoped>
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  overscroll-behavior-y: none;
+  overscroll-behavior-x: none;
+}
+
 .code-entry-container {
-  height: 100vh;
-  width: 100vw;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  overflow-y: scroll;
+  -ms-scroll-chaining: none;
+  overscroll-behavior: contain;
+
+  /* height: 100vh;
+  width: 100vw; */
   display: flex;
   flex-direction: column;
   justify-content: center;
