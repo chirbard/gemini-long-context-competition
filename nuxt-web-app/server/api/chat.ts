@@ -4,14 +4,6 @@ import fs from "fs";
 // Helper to simulate sleep with exponential backoff
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-const configGlobal = useRuntimeConfig();
-const googleApiKey1 = configGlobal.googleApiKey1;
-const genAIGlobal = new GoogleGenerativeAI(googleApiKey1);
-const modelGlobal = genAIGlobal.getGenerativeModel({
-  model: "gemini-1.5-flash",
-});
-const chatGlobal = modelGlobal.startChat();
-
 class APIKeyRotator {
   constructor(keys) {
     this.keys = keys;
@@ -25,7 +17,7 @@ class APIKeyRotator {
     return key;
   }
 
-  async getGenerativeAIModelWithRetry(prompt) {
+  async getGenerativeAIModelWithRetry(messageHistory, prompt) {
     for (let i = 0; i < this.keys.length; i++) {
       const apiKey = this.getNextKey();
       console.log(`Attempting with API key: ${apiKey}`);
@@ -44,7 +36,7 @@ class APIKeyRotator {
         parts: [{ text: legalDocumentFile }],
       };
 
-      // messageHistory.unshift(fileMessage);
+      messageHistory.unshift(fileMessage);
 
       try {
         const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
@@ -52,20 +44,16 @@ class APIKeyRotator {
           role: "system",
           parts: [
             {
-              text: "Sa oled seaduste abiline juur.ai ja sulle on antud üks seadus ette. Vasta kasutajale kasutades seda seadust",
+              text: "Sinu nimi on juur.ai. Sa oled seaduste abiline ja sulle on antud üks seadus. Vasta kasutajale kasutades seda seadust",
             },
           ],
         };
 
-        // const chat = model.startChat({
-        //   history: messageHistory,
-        //   systemInstruction: systemInstruction,
-        // });
-        // const chat = model.startChat();
-
-        const history = chatGlobal.getHistory();
-        console.log("Chat history:", history);
-        const response = await chatGlobal.sendMessage(prompt);
+        const chat = model.startChat({
+          history: messageHistory,
+          systemInstruction: systemInstruction,
+        });
+        const response = await chat.sendMessage(prompt);
 
         if (response?.response?.candidates?.[0]?.content?.parts?.[0]?.text) {
           console.log(`Received response with key: ${apiKey}`);
@@ -116,6 +104,9 @@ export default defineEventHandler(async (event) => {
     });
   }
 
+  const messageHistoryJSON: string = body.messageHistory;
+  const messageHistory = JSON.parse(messageHistoryJSON);
+
   const apiKeyRotator = new APIKeyRotator([
     config.googleApiKey1,
     config.googleApiKey2,
@@ -127,7 +118,7 @@ export default defineEventHandler(async (event) => {
 
   try {
     const responseText = await apiKeyRotator.getGenerativeAIModelWithRetry(
-      // body.messageHistory,
+      messageHistory,
       body.prompt
     );
 
