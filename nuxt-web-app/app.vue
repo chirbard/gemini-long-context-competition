@@ -1,17 +1,24 @@
 <template>
   <div>
-    <!-- Add the routing button here -->
-    <button @click="goToHome">Go to Home</button>
-    <nuxt-page />
+    <nuxt-page v-if="accessGranted" />
+    <div v-else>
+      <router-view />
+    </div>
   </div>
 </template>
 
-<script>
-export default {
-  methods: {
-    goToHome() {
-      this.$router.push('/');
-    }
+<script setup>
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+
+const accessGranted = ref(false);
+const router = useRouter();
+
+onMounted(() => {
+  if (localStorage.getItem("accessGranted") === "true") {
+    accessGranted.value = true;
+  } else {
+    router.push("/code-entry");
   }
-}
+});
 </script>
