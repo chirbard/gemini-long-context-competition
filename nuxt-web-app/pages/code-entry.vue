@@ -10,13 +10,14 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { ref, onMounted } from "vue";
+import { useRouter, useRoute } from "vue-router";
 import { useFetch } from "#app";
 
 const accessCode = ref("");
 const errorMessage = ref("");
 const router = useRouter();
+const route = useRoute();
 
 const validateCode = async () => {
   const { data, error } = await useFetch("/api/validate-code", {
@@ -31,6 +32,14 @@ const validateCode = async () => {
     router.push("/");
   }
 };
+
+onMounted(() => {
+  const codeParam = route.query.code;
+  if (codeParam) {
+    accessCode.value = codeParam;
+    validateCode();
+  }
+});
 </script>
 
 <style>
