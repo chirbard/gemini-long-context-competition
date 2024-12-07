@@ -1,30 +1,29 @@
-<template>
-
-  <div class="app">
-    
-    <nuxt-page />
+<div>
+    <SpeedInsights />
+    <nuxt-page v-if="accessGranted" />
+    <div v-else>
+      <router-view />
+    </div>
   </div>
 </template>
 
-<script>
+<script setup>
 import "@fontsource/poppins";
+import { ref, onMounted } from "vue";
+import { useRouter } from "vue-router";
+import { SpeedInsights } from '@vercel/speed-insights/vue';
 
-export default {
-  head() {
-    return {
-      title: 'juur.ai'
-    };
-  },
-  methods: {
-    goToHome() {
-      this.$router.push('/');
-    }
+const accessGranted = ref(false);
+const router = useRouter();
+
+onMounted(() => {
+  if (localStorage.getItem("accessGranted") === "true") {
+    accessGranted.value = true;
+  } else {
+    router.push("/code-entry");
   }
-}
+});
 </script>
-
-
-
 <style>
 .app {
   font-family: 'Poppins';
