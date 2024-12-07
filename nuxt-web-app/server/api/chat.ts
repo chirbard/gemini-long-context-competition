@@ -1,5 +1,6 @@
 import { Content, GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
+import legalDocumentFile from "../../data/pohiseadus.txt";
 
 // Helper to simulate sleep with exponential backoff
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -23,8 +24,6 @@ class APIKeyRotator {
       console.log(`Attempting with ${i + 1}. API key`);
 
       const genAI = new GoogleGenerativeAI(apiKey);
-
-      const legalDocumentFile = fs.readFileSync("data/pohiseadus.txt", "utf-8");
 
       const fileMessage = {
         role: "user",
