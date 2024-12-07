@@ -1,3 +1,5 @@
+<template>
+ 
 <div>
     <SpeedInsights />
     <nuxt-page v-if="accessGranted" />
