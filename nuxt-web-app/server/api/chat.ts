@@ -1,8 +1,13 @@
 import { Content, GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Helper to simulate sleep with exponential backoff
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 class APIKeyRotator {
   constructor(keys) {
@@ -24,20 +29,11 @@ class APIKeyRotator {
 
       const genAI = new GoogleGenerativeAI(apiKey);
 
-      let legalDocumentFile: string = "";
-
-      try {
-        legalDocumentFile = fs.readFileSync("./data/pohiseadus.txt", "utf-8");
-      } catch (error: any) {
-        if (error.code === "ENOENT") {
-          legalDocumentFile = fs.readFileSync(
-            "./nuxt-web-app/data/pohiseadus.txt",
-            "utf-8"
-          );
-        } else {
-          throw error;
-        }
-      }
+      const legalDocumentFilePath = path.resolve(
+        __dirname,
+        "../../data/pohiseadus.txt"
+      );
+      const legalDocumentFile = fs.readFileSync(legalDocumentFilePath, "utf-8");
 
       const fileMessage = {
         role: "user",
