@@ -3,7 +3,7 @@
         <h1>Chat with Google Generative AI</h1>
         <div class="messages">
             <div v-for="(msg, index) in messages" :key="index" class="message">
-                <strong>{{ msg.role }}:</strong> {{ msg.text }}
+                <strong>{{ msg.role }}:</strong> {{ msg.parts[0].text }}
             </div>
         </div>
         <form @submit.prevent="sendMessage">
@@ -17,28 +17,45 @@
 import { ref } from "vue";
 import { useFetch } from "#app";
 
+// const messages = ref([
+//     { role: "AI", text: "Hello! How can I assist you today?" },
+// ]);
 const messages = ref([
-    { role: "AI", text: "Hello! How can I assist you today?" },
-]);
+    // {
+    //     role: "user",
+    //     parts: [{ text: "Hello, i have 2 dogs" }],
+    // },
+    {
+        role: "model",
+        parts: [
+            { text: "Tere! Kuidas saan ma sind aidata?" },
+        ],
+    },
+],);
 const userInput = ref("");
 
 const sendMessage = async () => {
     if (!userInput.value.trim()) return;
 
+    const messageHistory = messages.value;
+    const prompt = userInput.value;
+
     // Add the user's message to the chat
-    messages.value.push({ role: "User", text: userInput.value });
+    messages.value.push({ role: "user", parts: [{ text: userInput.value }] });
 
     // Send the prompt to the API
     const { data, error } = await useFetch("/api/chat", {
         method: "POST",
-        body: { prompt: userInput.value },
+        body: { messageHistory: messageHistory, prompt: prompt },
     });
 
     if (error.value) {
-        messages.value.push({ role: "AI", text: "Sorry, something went wrong." });
+        // messages.value.push({ role: "AI", text: "Sorry, something went wrong." });
+        messages.value.push({ role: "model", parts: [{ text: "Sorry, something went wrong." }] });
         console.error(error.value);
     } else {
-        messages.value.push({ role: "AI", text: data.value.response });
+        // messages.value.push({ role: "AI", text: data.value.response });
+        messages.value.push({ role: "model", parts: [{ text: data.value.response }] });
     }
 
     userInput.value = ""; // Clear the input field
