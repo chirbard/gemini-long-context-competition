@@ -27,11 +27,11 @@ class APIKeyRotator {
       let legalDocumentFile: string = "";
 
       try {
-        legalDocumentFile = fs.readFileSync("data/pohiseadus.txt", "utf-8");
+        legalDocumentFile = fs.readFileSync("./data/pohiseadus.txt", "utf-8");
       } catch (error: any) {
         if (error.code === "ENOENT") {
           legalDocumentFile = fs.readFileSync(
-            "nuxt-web-app/data/pohiseadus.txt",
+            "./nuxt-web-app/data/pohiseadus.txt",
             "utf-8"
           );
         } else {
