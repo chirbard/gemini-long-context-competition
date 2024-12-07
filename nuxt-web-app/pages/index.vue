@@ -80,12 +80,13 @@ const formatTime = (timestamp) => {
 <style scoped>
 .chat-container {
     max-width: 600px;
-    height: calc(100vh - 16px);
+    /* height: calc(100vh - 16px); */
     margin: 0 auto;
     padding: 0px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    height: calc(100vh - env(safe-area-inset-bottom) - env(safe-area-inset-top));
 }
 
 .intro {
