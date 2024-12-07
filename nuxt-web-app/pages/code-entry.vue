@@ -54,6 +54,7 @@ onMounted(() => {
   align-items: center;
   text-align: center;
   gap: 1em;
+  overflow: hidden;
 }
 
 p {
