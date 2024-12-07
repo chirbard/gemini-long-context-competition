@@ -1,5 +1,4 @@
-<template>
-  <div>
+<div>
     <SpeedInsights />
     <nuxt-page v-if="accessGranted" />
     <div v-else>
@@ -9,6 +8,7 @@
 </template>
 
 <script setup>
+import "@fontsource/poppins";
 import { ref, onMounted } from "vue";
 import { useRouter } from "vue-router";
 import { SpeedInsights } from '@vercel/speed-insights/vue';
@@ -24,3 +24,8 @@ onMounted(() => {
   }
 });
 </script>
+<style>
+.app {
+  font-family: 'Poppins';
+}
+</style>
