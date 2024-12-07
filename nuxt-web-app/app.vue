@@ -1,13 +1,20 @@
 <template>
-  <div>
-    <!-- Add the routing button here -->
-    <button @click="goToHome">Go to Home</button>
+
+  <div class="app">
+    
     <nuxt-page />
   </div>
 </template>
 
 <script>
+import "@fontsource/poppins";
+
 export default {
+  head() {
+    return {
+      title: 'juur.ai'
+    };
+  },
   methods: {
     goToHome() {
       this.$router.push('/');
@@ -15,3 +22,11 @@ export default {
   }
 }
 </script>
+
+
+
+<style>
+.app {
+  font-family: 'Poppins';
+}
+</style>

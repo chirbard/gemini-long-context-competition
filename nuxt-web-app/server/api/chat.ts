@@ -19,7 +19,8 @@ class APIKeyRotator {
     async getGenerativeAIModelWithRetry(prompt) {
         for (let i = 0; i < this.keys.length; i++) {
             const apiKey = this.getNextKey();
-            console.log(`Attempting with API key: ${apiKey}`);
+
+            console.log(`Attempting with ${i + 1}. API key`);
 
             const genAI = new GoogleGenerativeAI(apiKey);
 
@@ -28,13 +29,13 @@ class APIKeyRotator {
                 const response = await model.generateContent(prompt);
 
                 if (response?.response?.candidates?.[0]?.content?.parts?.[0]?.text) {
-                    console.log(`Received response with key: ${apiKey}`);
+                    console.log("Successful response received.");
                     return response.response.candidates[0].content.parts[0].text;
                 } else {
-                    console.error(`Received empty response with key: ${apiKey}`);
+                    console.error(`Received empty response with ${i + 1}. API key`);
                 }
             } catch (error) {
-                console.error(`Error with API key ${apiKey}:`, error);
+                console.error(`Error with ${i + 1}. API key:`, error);
 
                 if (error?.message?.includes("429")) {
                     console.log("Received 429 error, retrying with backoff...");

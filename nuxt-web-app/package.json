@@ -10,6 +10,7 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@fontsource/poppins": "^5.1.0",
     "@google/generative-ai": "^0.21.0",
     "nuxt": "^3.14.1592",
     "vue": "latest",
