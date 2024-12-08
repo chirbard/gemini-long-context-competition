@@ -171,7 +171,8 @@ body {
   margin-left: auto;
   max-width: 80%;
   width: fit-content;
-  color: white;
+  color: rgb(226, 226, 233);
+  font-weight: 400;
   background-color: #16568B;
   text-align: left;
   border-radius: 16px;

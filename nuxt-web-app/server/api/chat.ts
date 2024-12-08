@@ -2,26 +2,27 @@ import { Content, GoogleGenerativeAI } from "@google/generative-ai";
 import fs from "fs";
 import legalDocumentFile from "../../data/pohiseadus.txt";
 
-// Helper to simulate sleep with exponential backoff
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 class APIKeyRotator {
   constructor(keys) {
     this.keys = keys;
-    this.currentIndex = 0;
   }
 
   // Rotate the API key
-  getNextKey() {
-    const key = this.keys[this.currentIndex];
-    this.currentIndex = (this.currentIndex + 1) % this.keys.length;
-    return key;
+  getRandomKey() {
+    const randomIndex = Math.floor(Math.random() * this.keys.length);
+    return this.keys[randomIndex];
   }
 
   async getGenerativeAIModelWithRetry(messageHistory, prompt) {
-    for (let i = 0; i < this.keys.length; i++) {
-      const apiKey = this.getNextKey();
-      console.log(`Attempting with ${i + 1}. API key`);
+    const attemptedKeys = new Set();
+
+    while (attemptedKeys.size < this.keys.length) {
+      const apiKey = this.getRandomKey();
+
+      if (attemptedKeys.has(apiKey)) continue;
+      attemptedKeys.add(apiKey);
 
       const genAI = new GoogleGenerativeAI(apiKey);
 
@@ -53,10 +54,10 @@ class APIKeyRotator {
           console.log("Successful response received.");
           return response.response.candidates[0].content.parts[0].text;
         } else {
-          console.error(`Received empty response with ${i + 1}. API key`);
+          console.error(`Received empty response with API key`);
         }
       } catch (error) {
-        console.error(`Error with API key ${apiKey}:`, error);
+        console.error(`Error with API key: `, error);
 
         if (error?.message?.includes("429")) {
           console.log("Received 429 error, retrying with backoff...");
