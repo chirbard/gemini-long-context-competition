@@ -1,6 +1,10 @@
 import os
 
+
 def generate_new_files(groups, data_folder='./data', output_folder='./output'):
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
     for i, group in enumerate(groups):
         i = i + 1
         with open(f'{output_folder}/group_{i}.txt', 'w') as f:
