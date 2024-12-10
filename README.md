@@ -26,7 +26,7 @@ To build the web application locally, follow these steps:
 git clone https://github.com/chirbard/gemini-long-context-competition.git
 
 # Navigate to the web application directory
-cd /gemini-long-context-competition/nuxt-web-app
+cd gemini-long-context-competition/nuxt-web-app
 
 # Check if Node.js is installed
 node -v  # Check the installed version of Node.js
@@ -45,6 +45,27 @@ http://localhost:3000/
 
 ### Notebook
 
+To build the notebook in docker, follow these steps:
+```shell
+# Open a terminal (Command Prompt or PowerShell for Windows, Terminal for macOS or Linux)
+
+# Ensure Git is installed
+# Visit https://git-scm.com to download and install console Git if not already installed
+
+# Clone the repository
+git clone https://github.com/chirbard/gemini-long-context-competition.git
+
+# Navigate to the notebook directory
+cd gemini-long-context-competition/notebook
+
+# Build and run container
+docker compose up
+
+# open notebook in browser
+http://127.0.0.1:8888/lab?token=...
+```
+
+
 To build the notebook locally, follow these steps:
 
 ```shell
@@ -57,7 +78,7 @@ To build the notebook locally, follow these steps:
 git clone https://github.com/chirbard/gemini-long-context-competition.git
 
 # Navigate to the notebook directory
-cd /gemini-long-context-competition/notebook
+cd gemini-long-context-competition/notebook
 
 # Check if Jupyter Notebook is installed
 jupyter notebook --version  # Check the installed version of Jupyter Notebook
@@ -72,5 +93,4 @@ cd /volume
 # Open the Notebook
 
 juur-ai-simplify-law.ipynb
-
 ```
