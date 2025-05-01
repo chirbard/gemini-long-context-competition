@@ -1,6 +1,14 @@
 <template>
   <div class="code-entry-container">
-    <img src="/images/logo.svg" alt="juurikas" />
+    <div class="logo-header">
+      <div class="icon-container"></div>
+      <img src="/images/logo.svg" alt="juurikas"/>
+      <div class="icon-container">
+        <a href="https://github.com/chirbard/gemini-long-context-competition" target="_blank" rel="noopener">
+          <img src="/images/github-mark.svg" alt="github-mark"/>
+        </a>
+      </div>
+    </div>
     <!-- <h2>Enter access code to continue</h2> -->
     <form @submit.prevent="validateCode" class="input-group">
       <label class="input-group__label">Enter access code to continue</label>
@@ -53,6 +61,25 @@ body {
   position: fixed;
   overscroll-behavior-y: none;
   overscroll-behavior-x: none;
+}
+
+.logo-header {
+  width: 96%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo-header .icon-container {
+  width: 20px;
+  margin: 0 0.5em;
+}
+
+.logo-header .icon-container img {
+  width: 100%;
+  height: auto;
 }
 
 .code-entry-container {
