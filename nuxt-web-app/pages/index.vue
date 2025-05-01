@@ -4,6 +4,11 @@
       <div class="intro">
         <img src="/images/logo.svg" alt="juurikas" />
         <h1>juur.ai</h1>
+        <div class="icon-container">
+          <a href="https://github.com/chirbard/gemini-long-context-competition" target="_blank" rel="noopener">
+            <img src="/images/github-mark.svg" alt="github-mark"/>
+          </a>
+        </div>
       </div>
       <div class="messages">
         <div v-for="(msg, index) in messages" :key="index" class="message"
@@ -121,6 +126,22 @@ body {
   height: 50px;
   display: none;
   align-items: center;
+}
+
+.intro .icon-container {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+
+.intro .icon-container a {
+  margin: 0 0.5em;
+}
+
+.intro .icon-container img {
+  width: 20px;
+  height: auto;
 }
 
 @media only screen and (min-height: 400px) {
