@@ -1,0 +1,3 @@
+
+# Don't track data files that include test.txt subfix
+*test.txt
