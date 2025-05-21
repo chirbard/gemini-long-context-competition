@@ -12,5 +12,5 @@ output_folder = './output/'
 url = os.getenv('URL')
 
 
-scrape(data_folder, url, ".txt")
+# scrape(data_folder, url, ".txt")
 modify_files(data_folder, output_folder, 7, "§ 1.", "Seaduse jõustumine")
