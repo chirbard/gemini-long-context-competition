@@ -173,10 +173,13 @@ def clean_text(input_file_path, output_file_path):
 
 
 def modify_files(data_folder, output_folder, n, end_text, start_text):
-    for i in os.listdir(data_folder):
-        if i.endswith(".txt"):
-            input_path = data_folder + i
-            output_path = output_folder + i
+    if not os.path.exists(output_folder):
+        os.makedirs(output_folder)
+
+    for file_name in os.listdir(data_folder):
+        if file_name.endswith(".txt"):
+            input_path = data_folder + file_name
+            output_path = output_folder + file_name
             remove_first_n_lines(input_path, output_path, n)
             remove_section(output_path, output_path, end_text)
             remove_lines_with_brackets(output_path, output_path)

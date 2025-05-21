@@ -42,6 +42,7 @@ const messages = ref([
   },
 ]);
 const userInput = ref("");
+const isThinking = ref(false);
 
 const sendMessage = async () => {
   if (!userInput.value.trim()) return;
@@ -64,11 +65,25 @@ const sendMessage = async () => {
   // Add the user's message to the chat
   messages.value.push({ role: "user", parts: [{ text: prompt }], timestamp: new Date().toISOString() });
 
+  // Show "thinking" placeholder
+  isThinking.value = true;
+  messages.value.push({
+    role: "model",
+    parts: [{ text: "thinking..." }],
+    timestamp: new Date().toISOString(),
+    thinkingPlaceholder: true,
+  });
+
   // Send the prompt to the API
   const { data, error } = await useFetch("/api/chat", {
     method: "POST",
     body: { messageHistory: messageHistory, prompt: prompt },
   });
+
+  // Remove the "thinking" placeholder
+  const idx = messages.value.findIndex(m => m.thinkingPlaceholder);
+  if (idx !== -1) messages.value.splice(idx, 1);
+  isThinking.value = false;
 
   if (error.value) {
     messages.value.push({ role: "model", parts: [{ text: "Sorry, something went wrong." }], timestamp: new Date().toISOString() });
