@@ -11,7 +11,7 @@
           </a>
         </div>
         <div class="doc-select-btn-container">
-          <button class="doc-select-btn btn" @click="showDocPopup = true">Choose Documents</button>
+          <button class="doc-select-btn btn" @click="showDocPopup = true">Documents</button>
         </div>
       </div>
       <div class="messages">
@@ -146,7 +146,7 @@ const sendMessage = async () => {
   isThinking.value = false;
 
   if (error.value) {
-    messages.value.push({ role: "model", parts: [{ text: "Sorry, something went wrong. Try selecting less documents" }], timestamp: new Date().toISOString() });
+    messages.value.push({ role: "model", parts: [{ text: "Sorry, something went wrong. Try again later or choose less documents." }], timestamp: new Date().toISOString() });
     console.error(error.value);
   } else {
     messages.value.push({ role: "model", parts: [{ text: data.value.response }], timestamp: new Date().toISOString() });
@@ -357,10 +357,6 @@ body {
   border-radius: 8px;
   cursor: pointer;
   width: fit-content;
-}
-
-.doc-select-btn {
-  width: 14em;
 }
 
 .doc-select-btn-container {
