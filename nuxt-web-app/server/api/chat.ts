@@ -105,16 +105,20 @@ class APIKeyRotator {
           console.log(
             'Received 429 error, quota for this key reached, trying next key...'
           );
-          // const delay = Math.pow(2, i) * 100; // Exponential backoff
-          // console.log(`Retry delay: ${delay}ms`);
-          // await sleep(delay);
         } else if (error?.message?.includes('401')) {
-          console.error('Unauthorized - Invalid or expired API key.');
+          console.error(
+            'Unauthorized - Invalid or expired API key. Trying next key...'
+          );
+        } else if (error?.message?.includes('403')) {
+          console.error('Forbidden - Access denied. Trying next key...');
         } else if (error?.message?.includes('400')) {
-          console.error('Bad request - Invalid request parameters.');
+          console.error(
+            'Bad request - Invalid request parameters. Cancelling...'
+          );
           throw error;
         } else {
           console.error('Unknown error occurred.');
+          throw error;
         }
       }
     }
