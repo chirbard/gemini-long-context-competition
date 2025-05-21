@@ -4,13 +4,31 @@ import {
   StartChatParams,
 } from '@google/generative-ai';
 import fs from 'fs';
-import legalDocumentFile from '../../data/pohiseadus.txt';
+import { dirname, resolve } from 'path';
+import { fileURLToPath } from 'url';
+// import legalDocumentFile from '../../data/pohiseadus.txt';
 
 export default defineEventHandler(async (event) => {
   const config = useRuntimeConfig();
   const body = await readBody(event);
 
-  const { messageHistory, prompt } = parseRequestBody(body);
+  const { messageHistory, prompt, selectedDocuments } = parseRequestBody(body);
+
+  console.log('selectedDocuments', selectedDocuments);
+
+  const __filename = fileURLToPath(import.meta.url);
+  const __dirname = dirname(__filename);
+
+  let combinedDocs = '';
+  for (const docName of selectedDocuments) {
+    try {
+      const filePath = resolve(__dirname, '../../data', `${docName}.txt`);
+      const fileContent = fs.readFileSync(filePath, 'utf-8');
+      combinedDocs += `\n[${docName}]\n${fileContent}\n`;
+    } catch (err) {
+      console.error(`Failed to read document: ${docName}`, err);
+    }
+  }
 
   const apiKeyRotator = new APIKeyRotator([
     config.googleApiKey1,
@@ -24,7 +42,8 @@ export default defineEventHandler(async (event) => {
   try {
     const responseText = await apiKeyRotator.getGenerativeAIModelWithRetry(
       messageHistory,
-      prompt
+      prompt,
+      combinedDocs
     );
 
     return { response: responseText };
@@ -38,17 +57,26 @@ export default defineEventHandler(async (event) => {
 });
 
 function parseRequestBody(body: any) {
-  if (!body || !body.messageHistory || !body.prompt) {
+  if (
+    !body ||
+    !body.messageHistory ||
+    !body.prompt ||
+    !body.selectedDocuments
+  ) {
     throw createError({
       statusCode: 400,
-      message: 'Message History and prompt is required',
+      message: 'Message History, prompt and selectedDocuments is required',
     });
   }
 
   const messageHistoryJSON: string = body.messageHistory;
   const messageHistory = JSON.parse(messageHistoryJSON);
 
-  return { messageHistory, prompt: body.prompt };
+  return {
+    messageHistory,
+    prompt: body.prompt,
+    selectedDocuments: body.selectedDocuments,
+  };
 }
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -72,7 +100,11 @@ class APIKeyRotator {
     return selectedKey;
   }
 
-  async getGenerativeAIModelWithRetry(messageHistory: any, prompt: any) {
+  async getGenerativeAIModelWithRetry(
+    messageHistory: any,
+    prompt: any,
+    combinedDocs: string
+  ) {
     while (this.unusedKeys.length != 0) {
       const apiKey = this.getRandomKey();
 
@@ -85,7 +117,7 @@ class APIKeyRotator {
         // console.log('Token count:', tokenCount);
 
         const chat = model.startChat(
-          this.createChatStartParameters(messageHistory)
+          this.createChatStartParameters(messageHistory, combinedDocs)
         );
 
         // console.log('Chat initialized with message history:', messageHistory);
@@ -127,10 +159,13 @@ class APIKeyRotator {
     throw new Error('All API keys failed after retries.');
   }
 
-  createChatStartParameters(messageHistory: any): StartChatParams {
+  createChatStartParameters(
+    messageHistory: any,
+    combinedDocs: string
+  ): StartChatParams {
     const fileMessage = {
       role: 'user',
-      parts: [{ text: legalDocumentFile }],
+      parts: [{ text: combinedDocs }],
     };
 
     messageHistory.unshift(fileMessage); // Add the legal document to the beginning of the message history

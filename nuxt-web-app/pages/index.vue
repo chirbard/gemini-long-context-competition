@@ -4,10 +4,14 @@
       <div class="intro">
         <img src="/images/logo.svg" alt="juurikas" />
         <h1>juur.ai</h1>
+        
         <div class="icon-container">
           <a href="https://github.com/chirbard/gemini-long-context-competition" target="_blank" rel="noopener">
             <img src="/images/github-mark.svg" alt="github-mark"/>
           </a>
+        </div>
+        <div class="doc-select-btn-container">
+          <button class="doc-select-btn btn" @click="showDocPopup = true">Choose Documents</button>
         </div>
       </div>
       <div class="messages">
@@ -18,11 +22,28 @@
         </div>
       </div>
 
+      
       <div class="userInput">
         <form @submit.prevent="sendMessage">
           <input v-model="userInput" type="text" placeholder="Ask Juurikas" class="input" />
           <button type="submit" class="button"></button>
         </form>
+      </div>
+      
+    </div>
+
+    <div v-if="showDocPopup" class="popup-overlay">
+      <div class="popup">
+        <h2>Vali dokumendid</h2>
+        <div class="doc-list">
+          <label v-for="doc in documents" :key="doc.code" class="doc-item">
+            <input type="checkbox" :value="doc.code" v-model="selectedDocuments" />
+            {{ doc.code }}: {{ doc.name }}
+          </label>
+        </div>
+        <div class="popup-actions">
+          <button class="btn" @click="closeDocPopup">OK</button>
+        </div>
       </div>
     </div>
   </div>
@@ -43,6 +64,45 @@ const messages = ref([
 ]);
 const userInput = ref("");
 const isThinking = ref(false);
+
+const showDocPopup = ref(false);
+const selectedDocuments = ref([]);
+
+// Your document list
+const documents = [
+  { code: "PS", name: "Eesti Vabariigi põhiseadus (Constitution of the Republic of Estonia)" },
+  { code: "TsÜS", name: "Tsiviilseadustiku üldosa seadus (General Part of the Civil Code Act)" },
+  { code: "AÕS", name: "Asjaõigusseadus (Law of Property Act)" },
+  { code: "VÕS", name: "Võlaõigusseadus (Law of Obligations Act)" },
+  { code: "ÄS", name: "Äriseadustik (Commercial Code)" },
+  // { code: "KMS", name: "Käibemaksuseadus (Value Added Tax Act)" },
+  // { code: "TMS", name: "Täitemenetluse seadustik (Code of Enforcement Procedure)" },
+  // { code: "KrMS", name: "Kriminaalmenetluse seadustik (Code of Criminal Procedure)" },
+  // { code: "TsMS", name: "Tsiviilkohtumenetluse seadustik (Code of Civil Procedure)" },
+  // { code: "KarS", name: "Karistusseadustik (Penal Code)" },
+  // { code: "TLS", name: "Töölepingu seadus (Employment Contracts Act)" },
+  // { code: "KAS", name: "Krediidiasutuste seadus (Credit Institutions Act)" },
+  // { code: "KonkS", name: "Konkurentsiseadus (Competition Act)" },
+  // { code: "RHS", name: "Riigihangete seadus (Public Procurement Act)" },
+  // { code: "AvTS", name: "Avaliku teabe seadus (Public Information Act)" },
+  // { code: "KVS", name: "Kaitseväeteenistuse seadus (Military Service Act)" },
+  // { code: "KOKS", name: "Kohaliku omavalitsuse korralduse seadus (Local Government Organisation Act)" },
+  // { code: "PerekS", name: "Perekonnaseadus (Family Law Act)" },
+  // { code: "PKS", name: "Perekonnaseadus (Family Law Act)" },
+  // { code: "RVS", name: "Riigivaraseadus (State Assets Act)" },
+];
+
+function toggleDoc(code) {
+  if (selectedDocuments.value.includes(code)) {
+    selectedDocuments.value = selectedDocuments.value.filter(c => c !== code);
+  } else {
+    selectedDocuments.value.push(code);
+  }
+}
+
+function closeDocPopup() {
+  showDocPopup.value = false;
+}
 
 const sendMessage = async () => {
   if (!userInput.value.trim()) return;
@@ -77,7 +137,7 @@ const sendMessage = async () => {
   // Send the prompt to the API
   const { data, error } = await useFetch("/api/chat", {
     method: "POST",
-    body: { messageHistory: messageHistory, prompt: prompt },
+    body: { messageHistory: messageHistory, prompt: prompt, selectedDocuments: selectedDocuments.value },
   });
 
   // Remove the "thinking" placeholder
@@ -86,7 +146,7 @@ const sendMessage = async () => {
   isThinking.value = false;
 
   if (error.value) {
-    messages.value.push({ role: "model", parts: [{ text: "Sorry, something went wrong." }], timestamp: new Date().toISOString() });
+    messages.value.push({ role: "model", parts: [{ text: "Sorry, something went wrong. Try selecting less documents" }], timestamp: new Date().toISOString() });
     console.error(error.value);
   } else {
     messages.value.push({ role: "model", parts: [{ text: data.value.response }], timestamp: new Date().toISOString() });
@@ -287,5 +347,60 @@ body {
   .input {
     width: calc(100% - 36px);
   }
+}
+
+.btn {
+  padding: 8px 16px;
+  background: #16568B;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  width: fit-content;
+}
+
+.doc-select-btn {
+  width: 14em;
+}
+
+.doc-select-btn-container {
+  /* display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px; */
+  width: fit-content;
+}
+
+.popup-overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.popup {
+  background: #fff;
+  padding: 24px;
+  border-radius: 12px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 2px 16px rgba(0,0,0,0.2);
+}
+
+.doc-list {
+  max-height: 300px;
+  overflow-y: auto;
+  margin-bottom: 16px;
+}
+
+.doc-item {
+  display: block;
+  margin-bottom: 8px;
+}
+
+.popup-actions {
+  text-align: right;
 }
 </style>
