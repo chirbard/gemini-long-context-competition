@@ -57,7 +57,7 @@ const messages = ref([
   {
     role: "model",
     parts: [
-      { text: "Tere, Ma olen Juurikas. Sinu isiklik juriidiline nõustaja." },
+      { text: "Tere, Ma olen Juurikas. Sinu isiklik juriidiline nõustaja. Vajutades nuppule 'Documents' saad valida, mis seaduseid ma vastamiseks kasutan." },
     ],
     timestamp: new Date().toISOString()
   },
@@ -66,7 +66,7 @@ const userInput = ref("");
 const isThinking = ref(false);
 
 const showDocPopup = ref(false);
-const selectedDocuments = ref([]);
+const selectedDocuments = ref(["PS"]);
 
 // Your document list
 const documents = [
